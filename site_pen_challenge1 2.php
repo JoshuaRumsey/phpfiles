@@ -36,8 +36,6 @@ body {
 </style>
 
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
 <script>
 
 var mytext = '<?php echo $contents; ?>';
@@ -124,7 +122,8 @@ if (mytext != 0) {
 		display_html += "<font size=+"+this_font_size+">"+word_row[0]+"</font>"+row_append;
 	}
 }
-document.getElementById("show_word_list").innerHTML = display_html;	
+if (display_html.length > 0) document.getElementById("show_word_list").innerHTML = display_html;	
+
 
 </script>
 

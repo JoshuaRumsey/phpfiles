@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title></title>
+
+	<!-- angular -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--[if IE]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  
+  <style>
+  	input {
+	  background-color: black;
+	  color: white;
+	}
+	input.ng-dirty {
+	  background-color: white;
+	  color: black;
+	}
+	.margin-all {
+		margin-top:20px;
+		margin-left:30px;
+	}
+	.form-horizontal {
+		width: 400px;
+	}
+	.form-control {
+	  background-color: black;
+	  color: white;
+	}
+</style>
+
+  <body>
+
+
+<!--div ng-app="myApp" ng-controller="formCtrl" class="alert alert-info alert-dismissable fade in"-->
+<div ng-app="myApp" ng-controller="formCtrl" class="alert alert-info alert-dismissable fade in">
+<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <form novalidate name="myForm" class="form-horizontal margin-all">
+  <div class="form-group">  
+  <input type="text" name="username" class="form-control" ng-model="user.username" ng-focus="user.username = null" required>
+  <span style="color:red" ng-show="myForm.username.$dirty && myForm.username.$invalid">
+  <span ng-show="myForm.username.$error.required">Username is required.</span>
+  </span>
+  </div>
+  
+  <div class="form-group">  
+
+  <input type="email" name="email" class="form-control" ng-model="user.email"  ng-focus="user.email = null" ng-blur="" required>
+  <span style="color:red" ng-show="myForm.email.$dirty && myForm.email.$invalid">
+  <span ng-show="myForm.email.$error.required">Email is required.</span>
+  </span>
+	</div>  
+    <div class="form-group"> 
+    <input type="text" name="firstName" class="form-control" ng-model="user.firstName" ng-focus="user.firstName = null" required>
+	  <span style="color:red" ng-show="myForm.firstName.$dirty && myForm.firstName.$invalid">
+	  <span ng-show="myForm.firstName.$error.required">First name is required.</span>
+	  </span>
+   </div>
+     <div class="form-group"> 
+    <input type="text" name="lastName" class="form-control" ng-model="user.lastName" ng-focus="user.lastName = null" required>
+	  <span style="color:red" ng-show="myForm.lastName.$dirty && myForm.lastName.$invalid">
+	  <span ng-show="myForm.lastName.$error.required">Last name is required.</span>
+	  </span>    
+	  </div>
+	     <div class="form-group"> 
+  
+    To prove you're human, <br>
+    enter the {{user.r_key}} letter of the alphabet in UPPERCASE. <!--|{{myForm.captcha.$valid}}|--><br>
+    <input name="captcha" ng-model="captcha"  size="1" required my-directive><br>
+    {{user.alph_str}}
+
+
+    <br><br>
+    <button ng-click="reset()" class="form-control input-sm">RESET</button>
+    <button ng-click="submit()" class="form-control input-sm" ng-disabled="!myForm.captcha.$valid">Continue</button>
+    </div>
+  </form>
+
+</div>
+
+<script>
+function getRandInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+var rand_alph_key = getRandInt(0, 25);
+var alph_string = "ABCDEFGHIJKLMNOPQRSTUVQXYZ";
+var alph_arr = alph_string.split("");
+var rand_alph = alph_arr[rand_alph_key];
+var rand_key_disp = Number(rand_alph_key) + 1;
+
+if (2 < rand_alph_key && rand_alph_key < 20) {
+	rand_key_disp += "th";					
+}
+else {
+	var rand_last_dig = rand_alph_key.toString();
+	rand_last_dig = rand_last_dig.slice(-1);
+
+	switch (rand_last_dig) {
+		case "0": 
+			rand_key_disp += "st";
+			break;
+		case "1": 
+			rand_key_disp += "nd";
+			break;
+		case "2": 
+			rand_key_disp += "rd";
+			break;
+		default:
+			rand_key_disp += "th";					
+	}
+}
+
+var app = angular.module('myApp', []);
+app.controller('formCtrl', function($scope) {
+    $scope.master = {firstName:"First", lastName:"Last", email:"Email", username:"Username", 
+    				r_alph:rand_alph, r_key:rand_key_disp, captcha:false, alph_str:alph_string, };
+    $scope.reset = function() {
+        $scope.user = angular.copy($scope.master);
+    };
+    $scope.reset();
+});
+app.directive('myDirective', function() {
+    return {
+        require: 'ngModel',
+        link: function(scope, element, attr, mCtrl) {
+            function myValidation(value) {
+                if (value.indexOf(rand_alph) > -1) {
+                    mCtrl.$setValidity('charE', true);
+                } else {
+                    mCtrl.$setValidity('charE', false);
+                }
+                return value;
+            }
+            mCtrl.$parsers.push(myValidation);
+        }
+    };
+});
+</script>
+
+  </body>
+</html>
